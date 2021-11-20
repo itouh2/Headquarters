@@ -2,6 +2,7 @@
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Management.Automation;
 using System.Text.RegularExpressions;
 
 namespace Headquarters
@@ -44,25 +45,28 @@ namespace Headquarters
                 .Replace("$", "")
                 .Replace(" ", "")
                 .Split(',')
-                .Where(str => string.Compare(str, ReservedParameterName.Session, true) != 0)
+                .Where(str => string.Compare(str, ReservedParameterName.Session, true) != 0 && string.Compare(str, "IPList", true) != 0)
                 .ToList();
         }
 
-        public PowerShellScript.Result Run(string ipAddress, PowerShellScript.InvokeParameter param)
+        public PowerShellScript.Result Run(string ipAddress, PowerShellScript.InvokeParameter param, PSObject ipList = null)
         {
             PowerShellScript.Result result;
 
-			// スクリプト引数に $noSessionがあれば、セッション接続をせず実行できる
-			if (paramNames.IndexOf("noSession") >= 0)
-			{
-				result = psScript.Invoke(param);
-				return result;
-			}
 
-			param.parameters.TryGetValue(ParameterManager.SpecialParamName.UserName, out var userName);
+            param.parameters.Add("IPList", ipList);
+
+            // スクリプト引数に $noSessionがあれば、セッション接続をせず実行できる
+            if (paramNames.Any(paramNames => paramNames.ToLower() == "nosession"))
+            {
+                result = psScript.Invoke(param);
+                return result;
+            }
+
+            param.parameters.TryGetValue(ParameterManager.SpecialParamName.UserName, out var userName);
             param.parameters.TryGetValue(ParameterManager.SpecialParamName.UserPassword, out var userPassword);
 
-			var sessionResult = SessionManager.Instance.CreateSession(ipAddress, (string)userName, (string)userPassword, param);
+            var sessionResult = SessionManager.Instance.CreateSession(ipAddress, (string)userName, (string)userPassword, param);
             var session = sessionResult.objs.FirstOrDefault()?.BaseObject;
             if (session == null)
             {

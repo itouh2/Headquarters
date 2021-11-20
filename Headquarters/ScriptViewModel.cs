@@ -35,7 +35,7 @@ namespace Headquarters
 
                 var ret = label;
                 if (resultStr.Any()) ret += "\n" + resultStr;
-
+                
                 return ret;
             }
 
@@ -46,7 +46,7 @@ namespace Headquarters
                     string str = "";
                     if (collection?.Any() ?? false)
                     {
-                        str = string.Join("\n ", collection.Select(elem => $" {elem.ToString()}")) + "\n";
+                        str = string.Join("\n ", collection.Select(elem => $" {elem?.ToString()}")) + "\n";
                     }
                     return str;
                 }
@@ -174,6 +174,28 @@ namespace Headquarters
             })
             .ToList();
 
+            // IP Listをスクリプトに渡すためデータを作成する
+            var objList = new List<PSObject>();
+            foreach (var ipParams in ipParamsList)
+            {
+                var obj = new PSObject();
+                obj.Properties.Add(new PSNoteProperty(IPParams.isSelectedPropertyName, ipParams.isSelected));
+                foreach (var column in ipParams.Columns())
+                {
+                    var columnName = column.ToString();
+                    if (columnName != IPParams.isSelectedPropertyName)
+                    {
+                        var value = ipParams.Get(column.ToString());
+                        obj.Properties.Add(new PSNoteProperty(columnName, value));
+                    }
+                }
+                foreach (var parameter in Parameters)
+                {
+                    obj.Properties.Add(new PSNoteProperty(parameter.Name, parameter.Value));
+                }
+                objList.Add(obj);
+            }
+            var ipList = new PSObject(objList);
 
             ClearOutput();
             script.Load();
@@ -210,7 +232,7 @@ namespace Headquarters
                         }
                     };
 
-                    var result = script.Run(ipAndParam.ip, param);
+                    var result = script.Run(ipAndParam.ip, param, ipList);
                     data.result = result;
                     UpdateOutput();
                 });

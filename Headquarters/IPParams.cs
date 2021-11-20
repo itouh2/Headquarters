@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Data;
 
 namespace Headquarters
@@ -12,6 +13,10 @@ namespace Headquarters
         public bool isSelected => dataRow.Field<bool>(isSelectedPropertyName);
         public string ipStr => dataRow.Field<string>(ipPropertyName);
 
+        public DataColumnCollection Columns()
+        {
+            return dataRow.Table.Columns;
+        }
 
         public IPParams(DataRow dataRow)
         {
