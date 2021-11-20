@@ -37,6 +37,15 @@ Set-Item WSMan:\localhost\Client\TrustedHosts -Value *
    正常終了時は`☑[IPアドレス]:` のように表示されます
   
 ![alt throuth](Documents/throuth.gif)
+
+# 起動オプション
+| オプション | 概要 | 例|
+|---|---|---|
+|-ParamJson|pram.jsonパスの指定|-ParamJson=C:\tmp\param.json
+|-ScriptsDir|スクリプトディレクトリの指定|-ScriptsDir=C:\tmp\Scripts
+|-IpListCsv|iplist.csvパスの指定|-ParamJson=C:\tmp\iplist.csv
+|-IpListReadOnly|IPリストのを編集不可にする|-IpListReadOnly
+
   
 # スクリプト
 場所
