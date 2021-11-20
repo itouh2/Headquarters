@@ -52,10 +52,17 @@ namespace Headquarters
         {
             PowerShellScript.Result result;
 
-            param.parameters.TryGetValue(ParameterManager.SpecialParamName.UserName, out var userName);
+			// スクリプト引数に $noSessionがあれば、セッション接続をせず実行できる
+			if (paramNames.IndexOf("noSession") >= 0)
+			{
+				result = psScript.Invoke(param);
+				return result;
+			}
+
+			param.parameters.TryGetValue(ParameterManager.SpecialParamName.UserName, out var userName);
             param.parameters.TryGetValue(ParameterManager.SpecialParamName.UserPassword, out var userPassword);
 
-            var sessionResult = SessionManager.Instance.CreateSession(ipAddress, (string)userName, (string)userPassword, param);
+			var sessionResult = SessionManager.Instance.CreateSession(ipAddress, (string)userName, (string)userPassword, param);
             var session = sessionResult.objs.FirstOrDefault()?.BaseObject;
             if (session == null)
             {
@@ -66,7 +73,6 @@ namespace Headquarters
                 param.parameters.Add(ReservedParameterName.Session, session);
                 result = psScript.Invoke(param);
             }
-
 
             return result;
         }
