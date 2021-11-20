@@ -190,7 +190,7 @@
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
                                             <Button
-                                                Margin="8"
+                                                Margin="8" FontSize="30" Height="80"
                                         Style="{StaticResource MaterialDesignRaisedLightButton}"
                                         Click="OnClickSelectScript" Content="{Binding Header}" HorizontalAlignment="Left"/>
                                         </DataTemplate>
@@ -208,15 +208,15 @@
                             <materialDesign:ColorZone Mode="PrimaryMid" Padding="8,0,0,0" DockPanel.Dock="Top" materialDesign:ShadowAssist.ShadowDepth="Depth2">
                                 <DockPanel>
                                     <!-- Return Button -->
-                                    <Button 
+                                    <Button Height="80" Width="80" 
                                         materialDesign:ShadowAssist.ShadowDepth="Depth0"
                                         Command="{x:Static materialDesign:Transitioner.MovePreviousCommand}"
                                         HorizontalAlignment="Left">
-                                        <materialDesign:PackIcon Kind="ArrowLeft" />
+                                        <materialDesign:PackIcon Kind="ArrowLeftBold" Width="50" Height="50" />
                                     </Button>
 
-                                    <materialDesign:PackIcon Kind="ScriptText" VerticalAlignment="Center" Margin="8,0,0,0"/>
-                                    <Label Content="{Binding Header}" VerticalAlignment="Center" />
+                                    <materialDesign:PackIcon Kind="ScriptText" VerticalAlignment="Center" Margin="8,0,0,0" FontSize="35"/>
+                                    <Label Content="{Binding Header}" VerticalAlignment="Center" FontSize="35"/>
 
                                     <!-- Run Button -->
                                     <materialDesign:Transitioner Name="RunButtonSelector" SelectedIndex="1" Margin="16,0,8,0">
@@ -239,7 +239,7 @@
                                                     materialDesign:ShadowAssist.ShadowDepth="Depth3"
                                                     Click="OnClickRun"
                                                     >
-                                                    <materialDesign:PackIcon Kind="MenuRight" Height="32" Width="32" />
+                                                    <materialDesign:PackIcon Kind="MenuRight" Height="50" Width="50" />
                                                 </Button>
 
                                                 <DockPanel HorizontalAlignment="Right">
