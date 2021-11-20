@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
@@ -11,6 +12,8 @@ namespace Headquarters
     /// </summary>
     public partial class MainWindow : Window
     {
+        private const string OptionParamJson = "-ParamJson";
+        private const string OptionScriptsDir = "-ScriptsDir";
         IPListViewModel ipList;
         ScriptsViewModel scriptsVM;
 
@@ -18,15 +21,56 @@ namespace Headquarters
         {
             InitializeComponent();
 
-            var paramManager = ParameterManager.Instance;
-            paramManager.Load(".\\param.json");
+            // 引数を取得する
+            var adic = new Dictionary<string, string>();
+            string[] args = Environment.GetCommandLineArgs();
+            for (int idx = 0; idx < args.Length; idx++)
+            {
+                if (idx == 0)
+                {
+                    continue;
+                }
+                string[] wrk = args[idx].Split('=');
+                if (wrk.Length != 2)
+                {
+                    adic.Add(wrk[0], "true");
+                }
+                else
+                {
+                    adic.Add(wrk[0], wrk[1]);
+                }
+            }
 
-            scriptsVM = new ScriptsViewModel(".", @".\Scripts");
+            var paramManager = ParameterManager.Instance;
+            var paramJsonPath = @".\param.json";
+            if (adic.ContainsKey(OptionParamJson))
+            {
+                paramJsonPath = adic[OptionParamJson];
+            }
+            paramManager.Load(paramJsonPath);
+
+            var scriptDirs = new string[] { ".", @".\Scripts" };
+            if (adic.ContainsKey(OptionScriptsDir))
+            {
+                scriptDirs = new string[] { adic[OptionScriptsDir] };
+            }
+            scriptsVM = new ScriptsViewModel(scriptDirs);
             ScriptButtons.DataContext = scriptsVM;
 
             ipList = IPListViewModel.Instance;
-            ipList.Load(".\\iplist.csv");
+            var ipListCsvPath = @".\iplist.csv";
+            if (adic.ContainsKey("-IpListCsv"))
+            {
+                paramJsonPath = adic["-IpListCsv"];
+            }
+            ipList.Load(ipListCsvPath);
             ipList.Bind(dgIPList);
+
+            if (adic.ContainsKey("-IpListReadOnly"))
+            {
+                // 編集不可にする
+                dgIPList.IsReadOnly = true;
+            }
 
             ipList.PropertyChanged += (sender, e) =>
             {
