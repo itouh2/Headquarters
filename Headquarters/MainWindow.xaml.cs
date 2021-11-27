@@ -52,7 +52,8 @@ namespace Headquarters
             var scriptDirs = new string[] { ".", @".\Scripts" };
             if (adic.ContainsKey(OptionScriptsDir))
             {
-                scriptDirs = new string[] { adic[OptionScriptsDir] };
+                var dirs = adic[OptionScriptsDir].Split(',');
+                scriptDirs = dirs;
             }
             scriptsVM = new ScriptsViewModel(scriptDirs);
             ScriptButtons.DataContext = scriptsVM;
