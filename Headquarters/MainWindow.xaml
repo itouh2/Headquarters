@@ -302,7 +302,22 @@
                                 </DockPanel>
                             </materialDesign:ColorZone>
 
-                            <!-- Paramters -->
+
+                            <!-- Output -->
+                            <TextBox Text="{Binding ExplainText, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                     Style="{StaticResource MaterialDesignOutlinedTextFieldTextBox}"
+                                     TextWrapping="Wrap" 
+                                     VerticalAlignment="Stretch"
+                                     IsReadOnly="True"
+                                     AcceptsReturn="True"
+                                     VerticalScrollBarVisibility="Auto"
+                                     Margin="8,32,8,8"
+                                     MinHeight="50"
+                                     DockPanel.Dock="Top"
+                                     FontSize="21"
+                            />
+
+                            <!-- Parameters -->
                             <ListBox ItemsSource="{Binding Parameters}" MaxHeight="200" Margin="0,16,0,0" DockPanel.Dock="Top"
                                      KeyboardNavigation.TabNavigation="Continue"
                                      ScrollViewer.VerticalScrollBarVisibility="Disabled"

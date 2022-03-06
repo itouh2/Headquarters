@@ -88,6 +88,17 @@ namespace Headquarters
             }
         }
 
+        string explainText_ = "";
+        public string ExplainText
+        {
+            get => explainText_;
+            protected set
+            {
+                explainText_ = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ExplainText)));
+            }
+        }
+
         public int MaxTaskNum
         {
             get
@@ -129,6 +140,9 @@ namespace Headquarters
         {
             script.Load();
             Parameters = new ObservableCollection<Parameter>(script.paramNames.Select(p => new Parameter(p)));
+
+            // 説明テキスト
+            explainText_ = script.explainString;
 
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Parameters)));
         }

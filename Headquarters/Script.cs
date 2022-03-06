@@ -16,6 +16,8 @@ namespace Headquarters
 
         public string name => Path.GetFileNameWithoutExtension(filepath);
         public List<string> paramNames { get; protected set; }
+        public string explainString { get; protected set; }
+
 
         readonly string filepath;
         PowerShellScript psScript;
@@ -35,11 +37,22 @@ namespace Headquarters
                 psScript = new PowerShellScript(name, script);
 
                 paramNames = SearchParameters(script);
+
+                // 説明テキストの抽出
+                var expMatch = Regex.Match(script, @"(?<=#EXPLAIN )(.*)");
+                explainString = "";
+                while (expMatch.Success)
+                {
+                    explainString += expMatch.Value;
+                    expMatch=expMatch.NextMatch();
+                }
+
             }
         }
 
         List<string> SearchParameters(string script)
         {
+
             var match = Regex.Match(script, @"(?<=param\().*?(?=\))");
             return match.Value
                 .Replace("$", "")

@@ -33,7 +33,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\..\..\..\Tyffon\Tools\Headquaters\bin\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -146,6 +146,7 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <None Include="Scripts\InvokeCommandTest.ps1" />
+    <None Include="Scripts\TestNoSession.ps1" />
     <None Include="Scripts\StopProccess.ps1" />
     <None Include="Scripts\CreateStartupShortcut.ps1" />
     <None Include="Scripts\RestartPC.ps1" />
