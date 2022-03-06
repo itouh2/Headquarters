@@ -12,8 +12,11 @@ namespace Headquarters
     /// </summary>
     public partial class MainWindow : Window
     {
+        private const string OptionTitle = "-Title";
+        private const string OptionTheme = "-Theme";
         private const string OptionParamJson = "-ParamJson";
         private const string OptionScriptsDir = "-ScriptsDir";
+        private const string OptionIpListReadOnly = "-IpListReadOnly";
         IPListViewModel ipList;
         ScriptsViewModel scriptsVM;
 
@@ -39,6 +42,30 @@ namespace Headquarters
                 {
                     adic.Add(wrk[0], wrk[1]);
                 }
+            }
+
+            // 新しいリソース・ディクショナリを追加
+            var dict = new ResourceDictionary();
+            Application.Current.Resources.MergedDictionaries.Add(dict);
+
+            // WPFテーマをリソース・ディクショナリのソースに指定
+            try
+            {
+                if(adic.ContainsKey(OptionTheme))
+                {
+                    var title = adic[OptionTheme];
+                    string themeUri = $"pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.{title}.xaml";
+                    dict.Source = new Uri(themeUri);
+                }
+                if (adic.ContainsKey(OptionTitle))
+                {
+                    string titleString = adic[OptionTitle];
+                    title.Text = titleString;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
             }
 
             var paramManager = ParameterManager.Instance;
@@ -67,7 +94,7 @@ namespace Headquarters
             ipList.Load(ipListCsvPath);
             ipList.Bind(dgIPList);
 
-            if (adic.ContainsKey("-IpListReadOnly"))
+            if (adic.ContainsKey(OptionIpListReadOnly))
             {
                 // 編集不可にする
                 dgIPList.IsReadOnly = true;
