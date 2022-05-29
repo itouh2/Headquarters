@@ -63,6 +63,8 @@
                                         BoolPropertyName="IsIndependentIP"
                                         TrueTemplate="{StaticResource PasswordBoxTemplate}"
                                         FalseTemplate="{StaticResource PasswordTextBoxTemplate}"/>
+        <!-- バインドしたBoolの値で、Visibility型の値を得る -->
+        <BooleanToVisibilityConverter x:Key="BoolToVisible"/>
     </Window.Resources>
 
     <materialDesign:DialogHost Identifier="RootDialog">
@@ -317,21 +319,29 @@
                                      FontSize="21"
                             />
 
-                            <!-- Parameters -->
+                            <!-- 実行時パラメータ表示 -->
+                            <!-- レイアウトは横並び -->
                             <ListBox ItemsSource="{Binding Parameters}" MaxHeight="200" Margin="0,16,0,0" DockPanel.Dock="Top"
                                      KeyboardNavigation.TabNavigation="Continue"
-                                     ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                                     ScrollViewer.HorizontalScrollBarVisibility="Auto">
+                                     ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                                 <ListBox.ItemsPanel>
                                     <ItemsPanelTemplate>
-                                        <WrapPanel IsItemsHost="True" Orientation="Vertical"/>
+                                        <WrapPanel IsItemsHost="True" Orientation="Horizontal"/>
                                     </ItemsPanelTemplate>
                                 </ListBox.ItemsPanel>
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
                                         <TextBlock>
-                                            <Label Content="{Binding Name}" MinWidth="100"/>
-                                            <TextBox Text="{Binding Value}" IsEnabled="{Binding IsIndependentIP}" MinWidth="100" IsTabStop="True"/>
+                                            <Label Content="{Binding DisplayName}" />
+                                            <!-- パラメータの型がBoolなら、文字列パラメータを非表示にする -->
+                                            <TextBox Text="{Binding Value}" IsEnabled="{Binding IsIndependentIP}" Visibility="{Binding IsNotBoolValue, Converter={StaticResource BoolToVisible}}" MinWidth="100" IsTabStop="True"/>
+                                            <!-- パラメータの型がBoolなら、チェックボックスをデカく表示する -->
+                                            <CheckBox IsChecked="{Binding BoolValue, Mode=TwoWay}" Visibility="{Binding IsBoolValue, Converter={StaticResource BoolToVisible}}">
+                                                <CheckBox.LayoutTransform>
+                                                    <ScaleTransform ScaleX="4" ScaleY="4"/>
+                                                </CheckBox.LayoutTransform>
+                                            </CheckBox>
                                         </TextBlock>
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>

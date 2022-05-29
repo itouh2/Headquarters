@@ -12,6 +12,8 @@ namespace Headquarters
         public static class ReservedParameterName
         {
             public const string Session = "session";
+            public const string NoSession = "noSession";
+            public const string IPList = "IPList";
         }
 
         public string name => Path.GetFileNameWithoutExtension(filepath);
@@ -58,7 +60,12 @@ namespace Headquarters
                 .Replace("$", "")
                 .Replace(" ", "")
                 .Split(',')
-                .Where(str => string.Compare(str, ReservedParameterName.Session, true) != 0 && string.Compare(str, "IPList", true) != 0)
+                .Where(
+                    // スクリプト実行画面で、表示する必要の無いものチェック
+                    str => 
+                        string.Compare(str, ReservedParameterName.Session, true) != 0 && 
+                        string.Compare(str, ReservedParameterName.IPList, true) != 0
+                )
                 .ToList();
         }
 
@@ -70,7 +77,7 @@ namespace Headquarters
             param.parameters.Add("IPList", ipList);
 
             // スクリプト引数に $noSessionがあれば、セッション接続をせず実行できる
-            if (paramNames.Any(paramNames => paramNames.ToLower() == "nosession"))
+            if (paramNames.Any(paramNames => string.Compare( paramNames, ReservedParameterName.NoSession, true) !=0))
             {
                 result = psScript.Invoke(param);
                 return result;

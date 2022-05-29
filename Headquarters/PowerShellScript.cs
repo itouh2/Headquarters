@@ -53,7 +53,20 @@ namespace Headquarters
                 ps.RunspacePool = param.rsp;
 
                 ps.AddScript(script);
-                ps.AddParameters(param.parameters);
+
+                // paramをもとにPowerShellに値を渡す
+                // [bool]など型宣言が名前にはいっているのを削除する
+                foreach (var p in param.parameters)
+                {
+                    if (p.Key.Contains("[bool]") )
+                    {
+                        ps.AddParameter(p.Key.Replace("[bool]",""), Convert.ToBoolean(p.Value));
+                    }
+                    else
+                    {
+                        ps.AddParameter(p.Key, p.Value);
+                    }
+                }
 
                 var ret = new Result();
                 try
