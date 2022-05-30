@@ -77,7 +77,7 @@ namespace Headquarters
             param.parameters.Add("IPList", ipList);
 
             // スクリプト引数に $noSessionがあれば、セッション接続をせず実行できる
-            if (paramNames.Any(paramNames => string.Compare( paramNames, ReservedParameterName.NoSession, true) !=0))
+            if (paramNames.Any(paramNames => string.Compare( paramNames, ReservedParameterName.NoSession, true) == 0))
             {
                 result = psScript.Invoke(param);
                 return result;
