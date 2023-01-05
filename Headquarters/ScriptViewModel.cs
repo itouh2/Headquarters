@@ -35,7 +35,7 @@ namespace Headquarters
 
                 var ret = label;
                 if (resultStr.Any()) ret += "\n" + resultStr;
-                
+
                 return ret;
             }
 
@@ -178,16 +178,6 @@ namespace Headquarters
                 if (result != MessageBoxResult.OK) return null;
             }
 
-
-            var ipAndParams = ipParamsList.SelectMany(ipParams =>
-            {
-                IPAddressRange.TryParse(ipParams.ipStr, out var range);
-                var ipStrList = range?.AsEnumerable().Select(ip => ip.ToString()) ?? (new[] { ipParams.ipStr });
-                var paramDicOrig = parameters.ToDictionary(p => p.Name, p => (object)p.Get(ipParams));
-                return ipStrList.Select(ip => new { ip, paramDic = new Dictionary<string, object>(paramDicOrig) });
-            })
-            .ToList();
-
             // IP Listをスクリプトに渡すためデータを作成する
             var objList = new List<PSObject>();
             foreach (var ipParams in ipParamsList)
@@ -209,7 +199,21 @@ namespace Headquarters
                 }
                 objList.Add(obj);
             }
-            var ipList = new PSObject(objList);
+
+
+            var ipAndParams = ipParamsList.SelectMany(ipParams =>
+            {
+                IPAddressRange.TryParse(ipParams.ipStr, out var range);
+                var ipStrList = range?.AsEnumerable().Select(ip => ip.ToString()) ?? (new[] { ipParams.ipStr });
+                var paramDicOrig = parameters.ToDictionary(p => p.Name, p => (object)p.Get(ipParams));
+                return ipStrList.Select(ip => new { 
+                    ip, 
+                    paramDic = new Dictionary<string, object>(paramDicOrig), 
+                    ipList = new PSObject(new List<PSObject>(objList)) // Listのコピーを作成する
+                });
+            })
+            .ToList();
+
 
             ClearOutput();
             script.Load();
@@ -246,7 +250,7 @@ namespace Headquarters
                         }
                     };
 
-                    var result = script.Run(ipAndParam.ip, param, ipList);
+                    var result = script.Run(ipAndParam.ip, param, ipAndParam.ipList);
                     data.result = result;
                     UpdateOutput();
                 });
