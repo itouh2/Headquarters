@@ -76,21 +76,28 @@ namespace Headquarters
 
             param.parameters.Add("IPList", ipList);
 
+            param.parameters.TryGetValue(ParameterManager.SpecialParamName.UserName, out var userName);
+            param.parameters.TryGetValue(ParameterManager.SpecialParamName.UserPassword, out var userPassword);
+
             // スクリプト引数に $noSessionがあれば、セッション接続をせず実行できる
             if (paramNames.Any(paramNames => string.Compare( paramNames, ReservedParameterName.NoSession, true) == 0))
             {
+                // param( $noSession,...)のPSコマンドだと、stoppedになり、例外でとまることが多々あった
+                // 試しにSessionパラメータをつけくわえた
+                param.parameters.Add(ReservedParameterName.Session, null);
                 result = psScript.Invoke(param);
                 return result;
             }
-
-            param.parameters.TryGetValue(ParameterManager.SpecialParamName.UserName, out var userName);
-            param.parameters.TryGetValue(ParameterManager.SpecialParamName.UserPassword, out var userPassword);
 
             var sessionResult = SessionManager.Instance.CreateSession(ipAddress, (string)userName, (string)userPassword, param);
             var session = sessionResult.objs.FirstOrDefault()?.BaseObject;
             if (session == null)
             {
-                result = sessionResult;
+                // noSessionではなく、sessionがはれない場合でも実行できるようにしてみた
+                // $noSession時の、Stopped＋例外発生対応のため
+                param.parameters.Add(ReservedParameterName.Session, session);
+                result = psScript.Invoke(param);
+                // result = sessionResult;
             }
             else
             {
