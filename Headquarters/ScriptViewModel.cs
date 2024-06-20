@@ -235,6 +235,7 @@ namespace Headquarters
 
                 outputDatas.Add(data);
 
+                Thread.Sleep(Params.SessionSleep);
 
                 return Task.Run(() =>
                 {

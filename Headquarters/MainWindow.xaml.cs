@@ -17,6 +17,7 @@ namespace Headquarters
         private const string OptionParamJson = "-ParamJson";
         private const string OptionScriptsDir = "-ScriptsDir";
         private const string OptionIpListReadOnly = "-IpListReadOnly";
+        private const string OptionSessionSleep = "-SessionSleep";
         IPListViewModel ipList;
         ScriptsViewModel scriptsVM;
 
@@ -109,6 +110,14 @@ namespace Headquarters
                     OnChangeIPList();
                 }
             };
+            
+            if(adic.ContainsKey(OptionSessionSleep))
+            {
+                if (int.TryParse(adic[OptionSessionSleep], out var sleep))
+                {
+                    Params.SessionSleep = sleep;
+                }
+            }
 
             var pb = Resources["TopPasswordBox"] as PasswordBox;
             pb.Password = ParameterManager.UserPassword.Value;
