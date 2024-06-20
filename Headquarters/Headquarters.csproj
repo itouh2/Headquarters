@@ -95,6 +95,7 @@
     <Compile Include="NavigationCommands.cs" />
     <Compile Include="Parameter.cs" />
     <Compile Include="ParameterManager.cs" />
+    <Compile Include="Params.cs" />
     <Compile Include="ScriptManager.cs" />
     <Compile Include="Script.cs" />
     <Compile Include="ScriptsViewModel.cs" />
